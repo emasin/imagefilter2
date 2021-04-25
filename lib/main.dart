@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_grid_button/flutter_grid_button.dart';
 
 void main() {
   runApp(MyApp());
@@ -49,6 +50,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 100;
+  double _height = 400;
 
   void _incrementCounter() {
     setState(() {
@@ -57,15 +59,22 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      if(_counter>0)
-        _counter -= 10;
+//      if(_counter>0)
+//        _counter -= 10;
+      if(_height > 0)
+        _height -= _height*0.25;
 
-      print(_counter);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    if(_height == 400)
+      _height = size.width * 0.8;
+
+    print(size.height);
+   // _height = size.width*0.8;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -78,13 +87,15 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
+      body: Column(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Stack(  fit: StackFit.expand,
+        children:[
+          Container(child: SizedBox(height: 20,),),
+          Stack(fit: StackFit.loose,
           children: <Widget>[
-            Image.asset('asset/sample.png'),
-            Center(
+            Center(child: Image.asset('asset/sample.png',width:size.width*0.8 ,),),
+            Center(child: Container(height: _height,
               child: ClipRect(  // <-- clips to the 200x200 [Container] below
                 child: BackdropFilter(
                   filter: ImageFilter.blur(
@@ -92,11 +103,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     sigmaY: (0.1 * _counter),
                   ),
                   child: Container(
-                   color: Colors.black.withOpacity(0),
+                    color: Colors.black.withOpacity(0),
                   ),
                 ),
               ),
-            ),
+            )),
         Center(child : Visibility(visible: _counter==0,child: Stack(
           children: <Widget>[
             // Stroked text as border.
@@ -119,8 +130,31 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ],
-        ),))
+        ),)),
+
           ],),
+          SizedBox(height: 20,),
+          Center(child:Container(child:  GridButton(
+          borderColor: Colors.black,
+          hideSurroundingBorder: true,borderWidth: 0,
+
+          onPressed: (v){
+            print(v);
+          },
+          items: [
+            [
+              GridButtonItem(title: "불닭",textStyle: TextStyle(color: Colors.black)),
+              GridButtonItem(title:"빼빼로",child: Text("빼빼로")),
+
+            ],
+            [
+
+              GridButtonItem(title: "치토스", ),
+              GridButtonItem(title: "레모나", ),
+            ],
+
+          ],
+        ),height: 200,width: size.width-10,),)]
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
